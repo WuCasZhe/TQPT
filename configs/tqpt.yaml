@@ -1,0 +1,74 @@
+project:
+  name: TQPT
+  split_seed: 42
+  train_seeds: [42, 43, 44]
+
+paths:
+  raw_data: data/raw
+  processed_data: data/processed
+  base_model: models/chatglm2-6b
+  extended_tokenizer: artifacts/tokenizer/chatglm2-6b-traffic
+  extended_model: artifacts/models/chatglm2-6b-traffic
+  llamafactory: third_party/LLaMA-Factory
+  runs: runs
+  results: results
+
+tokenizer:
+  base_effective_vocab_size: 64794
+  added_tokens: 512
+  effective_vocab_size: 65306
+  matrix_capacity: 65536
+  compression_samples: 1000
+
+stage1:
+  framework: llamafactory-v0.1.0
+  quantization_bit: 4
+  quantization_type: nf4
+  double_quantization: true
+  compute_dtype: float16
+  lora_target: query_key_value
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+  learning_rate: 0.0001
+  num_train_epochs: 3.0
+  batch_size: 1
+  eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  cutoff_len: 1024
+  max_target_length: 8
+  logging_steps: 10
+  eval_steps: 100
+  save_steps: 100
+  joint_eval_steps: 1000
+  joint_save_steps: 1000
+  preprocessing_workers: 4
+  label_smoothing_factor: 0.0
+
+stage2:
+  pre_seq_len: 128
+  prefix_projection: false
+  learning_rate: 0.02
+  max_steps: 1000
+  batch_size: 1
+  eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  max_source_length: 1024
+  max_target_length: 32
+  logging_steps: 10
+  eval_steps: 4000
+  save_steps: 4000
+  preprocessing_workers: 4
+
+evaluation:
+  max_samples_per_task: 1000
+  batch_size: 4
+  max_new_tokens_router: 8
+  max_new_tokens_label: 32
+  do_sample: false
+  num_beams: 1
+
+experiments:
+  - TQPT
+  - TQPT_NT
+  - TQPT_NS

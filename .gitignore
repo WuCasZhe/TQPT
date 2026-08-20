@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Models, adapters, and experiment outputs.
+artifacts/
+runs/
+results/
+models/chatglm2-6b/*
+!models/chatglm2-6b/.gitkeep
+third_party/LLaMA-Factory/
+
+# Keep these directories local-only; GitHub retains only placeholders.
+docs/*
+!docs/.gitkeep
+tests/*
+!tests/.gitkeep
+
+# Local PDF review intermediates.
+tmp/
